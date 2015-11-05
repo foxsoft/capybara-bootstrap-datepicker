@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
-  gem.required_ruby_version = '>= 2.0.0'
+  gem.required_ruby_version = '>= 1.9'
 
   gem.add_development_dependency 'capybara', '~> 2.4', '>= 2.4.4'
   gem.add_development_dependency 'rspec', '~> 3.1', '>= 3.1.0'
