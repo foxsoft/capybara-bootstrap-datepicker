@@ -2,16 +2,20 @@ require 'capybara-bootstrap-datepicker/version'
 
 module Capybara
   module BootstrapDatepicker
-    def select_date(value, datepicker: :bootstrap, format: nil, from: nil, xpath: nil, **args)
+    def select_date(value, options = {}, *args)
+      from       = options.fetch(:from) { nil }
+      xpath      = options.fetch(:xpath) { nil }
+      datepicker = options.fetch(:datepicker) { :bootstrap }
+      format     = options.fetch(:format) { "%Y-%m-%d" }
       fail "Must pass a hash containing 'from' or 'xpath'" if from.nil? && xpath.nil?
 
       value = Date.parse(value) unless value.respond_to? :to_date
 
-      date_input = xpath ? find(:xpath, xpath, **args) : find_field(from, **args)
+      date_input = xpath ? find(:xpath, xpath, *args) : find_field(from, *args)
 
       case datepicker
       when :bootstrap
-        select_bootstrap_date date_input, value
+        select_bootstrap_date date_input, value, format
       else
         select_simple_date date_input, value
       end
@@ -25,7 +29,8 @@ module Capybara
       date_input.set "#{value}\e"
     end
 
-    def select_bootstrap_date(date_input, value)
+    def select_bootstrap_date(date_input, value, format)
+
       date_input.click
 
       picker = Picker.new
@@ -37,7 +42,7 @@ module Capybara
       picker.find_month(value.month).click
       picker.find_day(value.day).click
 
-      fail if Date.parse(date_input.value) != value
+      fail if Date.strptime(date_input.value, format) != value.to_date
     end
 
     private
